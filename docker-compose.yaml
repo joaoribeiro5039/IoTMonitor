@@ -1,0 +1,47 @@
+version: '3'
+services:
+
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3.9.11-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    restart: always
+
+  cassandra:
+    image: cassandra:latest
+    container_name: cassandra
+    ports:
+      - 9042:9042
+    volumes:
+      - cassandra-data:/var/lib/cassandra
+
+  mqtt:
+    container_name: mqtt
+    image: eclipse-mosquitto:2.0
+    ports:
+      - 1883:1883
+    volumes:
+      - ./mqtt/config/:/mosquitto/config/
+
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    restart: always
+    ports:
+      - "9000:9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+
+volumes:
+  rabbitmq-data:
+  cassandra-data:
+  redis_data:
+  portainer_data:
